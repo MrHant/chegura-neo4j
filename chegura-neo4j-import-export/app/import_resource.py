@@ -38,7 +38,8 @@ class ImportResource(object):
 
             # Recursively parse next moves
             next_moves = moves_payload.get('s')
-            map(lambda x: parse(x, next_fen), next_moves)
+            for move in next_moves:
+                parse(move, next_fen)
 
         try:
             payload = json.loads(req.stream.read())
