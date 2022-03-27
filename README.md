@@ -8,5 +8,7 @@ POC for [chegura](https://github.com/Scorpibear/chegura) to work with neo4j db.
  * Each service execution instructions available in respective folders
 
 ## Services
- * TBD
+ * chegura-neo4j-import-export
+   * service handling import and export of chess moves in json format
+  
 
