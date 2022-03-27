@@ -25,3 +25,24 @@ class DB(object):
                         color=move.get('color'), type_value=move.get('type') if move.get('type') is not None else '',
                         evaluation_value=move.get('evaluation_value', ""),
                         evaluation_depth=move.get('evaluation_depth', ""))
+
+    def get_moves(self, fen):
+        with self.driver.session() as session:
+            result = session.run("""
+             MATCH (n:Board)-[r]->(x) where n.fen=$fen RETURN r as move
+             """,
+                        fen=fen)
+            for row in result:
+                move = {
+                    'm': row['move'].get('move'),
+                    'n': row['move'].get('number'),
+                    'c': row['move'].get('color')
+                }
+                if row['move'].get('type') != '':
+                    move['t'] = row['move'].get('type')
+                if row['move'].get('evaluation_value') != '':
+                    move['e'] = {
+                        'v': row['move'].get('evaluation_value'),
+                        'd': row['move'].get('evaluation_depth')
+                    }
+                yield move

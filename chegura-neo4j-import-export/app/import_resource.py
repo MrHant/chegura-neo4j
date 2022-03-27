@@ -48,7 +48,7 @@ class ImportResource(object):
             return
 
         # Start parsing at initial board position
-        parse(payload, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
+        parse(payload, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq")
 
         resp.text = "Imported successfully"
 
