@@ -1,3 +1,4 @@
 falcon~=3.1.0
 waitress~=2.1.1
 requests~=2.27.1
+neo4j~=4.4.2
