@@ -10,5 +10,9 @@ POC for [chegura](https://github.com/Scorpibear/chegura) to work with neo4j db.
 ## Services
  * chegura-neo4j-import-export
    * service handling import and export of chess moves in json format
+   * runs on port 8100
+ * chegura-neo4j-core
+   * service handling general API operations
+   * runs on port 8101
   
 
