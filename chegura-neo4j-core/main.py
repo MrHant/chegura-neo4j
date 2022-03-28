@@ -12,6 +12,7 @@ api.add_route('/', LandingResource())
 api.add_route('/api/base', BaseResource(), suffix='base')
 fen_resource = FenResource()
 api.add_route('/api/fenbase', fen_resource, suffix='base')
+api.add_route('/api/fendata', fen_resource, suffix='data')
 
 # Start server
 serve(api, listen='*:8101')
