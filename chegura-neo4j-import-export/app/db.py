@@ -46,3 +46,26 @@ class DB(object):
                         'd': row['move'].get('evaluation_depth')
                     }
                 yield move
+
+    def get_all_moves(self):
+        with self.driver.session() as session:
+            result = session.run("""
+             MATCH (n:Board)-[r:MOVE]->() RETURN n.fen as fen, collect(r) as moves
+             """)
+            for row in result:
+                moves = []
+                for record in row['moves']:
+                    move = {
+                        'm': record.get('move'),
+                        'n': record.get('number'),
+                        'c': record.get('color')
+                    }
+                    if record.get('type') != '':
+                        move['t'] = record.get('type')
+                    if record.get('evaluation_value') != '':
+                        move['e'] = {
+                            'v': record.get('evaluation_value'),
+                            'd': record.get('evaluation_depth')
+                        }
+                    moves.append(move)
+                yield row['fen'], moves
