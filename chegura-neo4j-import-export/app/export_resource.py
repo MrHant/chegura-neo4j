@@ -17,7 +17,6 @@ class ExportResource(object):
                     board.push_san(move.get('m'))
                 next_fen = board.fen()
                 move['s'] = get_moves(next_fen)
-                print(move)
 
             return moves
 
