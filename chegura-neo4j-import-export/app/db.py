@@ -18,18 +18,18 @@ def _parse_move(record):
 
 
 class DB(object):
-    def __init__(self):
-        self.driver = GraphDatabase.driver("bolt://localhost:7687", auth=('neo4j', 'password'))
+    @classmethod
+    def init_db(cls):
+        cls.driver = GraphDatabase.driver("bolt://localhost:7687", auth=('neo4j', 'password'))
 
-    def close(self):
-        self.driver.close()
-
-    def add_board(self, fen):
-        with self.driver.session() as session:
+    @classmethod
+    def add_board(cls, fen):
+        with cls.driver.session() as session:
             session.run("MERGE (a:Board {fen: $fen})", fen=fen)
 
-    def add_move(self, fen, move, next_fen):
-        with self.driver.session() as session:
+    @classmethod
+    def add_move(cls, fen, move, next_fen):
+        with cls.driver.session() as session:
             session.run("""
             MATCH
               (prev:Board {fen: $fen}),
@@ -42,8 +42,9 @@ class DB(object):
                         evaluation_value=move.get('evaluation_value', ""),
                         evaluation_depth=move.get('evaluation_depth', ""))
 
-    def get_moves(self, fen):
-        with self.driver.session() as session:
+    @classmethod
+    def get_moves(cls, fen):
+        with cls.driver.session() as session:
             result = session.run("""
              MATCH (n:Board)-[r]->(x) where n.fen=$fen RETURN r as move
              """,
@@ -51,8 +52,9 @@ class DB(object):
             for row in result:
                 yield _parse_move(row['move'])
 
-    def get_all_moves(self):
-        with self.driver.session() as session:
+    @classmethod
+    def get_all_moves(cls):
+        with cls.driver.session() as session:
             result = session.run("""
              MATCH (n:Board)-[r:MOVE]->() RETURN n.fen as fen, collect(r) as moves
              """)

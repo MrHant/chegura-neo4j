@@ -6,9 +6,7 @@ from app.db import DB
 
 class ExportResource(object):
     def on_get_json(self, req, resp):
-        db = DB()
-
-        moves = dict(db.get_all_moves())
+        moves = dict(DB.get_all_moves())
 
         def get_moves(fen):
             next_moves = moves.get(fen)
@@ -26,6 +24,5 @@ class ExportResource(object):
 
         resp.media = get_moves("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq")[0]
 
-        db.close()
         resp.set_header('Content-Type', 'application/json')
         resp.status = falcon.HTTP_200

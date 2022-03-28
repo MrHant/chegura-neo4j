@@ -7,8 +7,6 @@ from app.db import DB
 
 class ImportResource(object):
     def on_post_upsert(self, req, resp):
-        db = DB()
-
         def get_current_move(moves_payload):
             move = {
                 "move": moves_payload.get('m'),
@@ -32,9 +30,9 @@ class ImportResource(object):
             next_fen = board.fen()
 
             # Add move into DB
-            db.add_board(fen)
-            db.add_board(next_fen)
-            db.add_move(fen, current_move, next_fen)
+            DB.add_board(fen)
+            DB.add_board(next_fen)
+            DB.add_move(fen, current_move, next_fen)
 
             # Recursively parse next moves
             next_moves = moves_payload.get('s')
@@ -52,6 +50,5 @@ class ImportResource(object):
 
         resp.text = "Imported successfully"
 
-        db.close()
         resp.set_header('Content-Type', 'text/plain')
         resp.status = falcon.HTTP_200

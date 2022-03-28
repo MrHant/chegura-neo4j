@@ -1,11 +1,13 @@
 import falcon
 from waitress import serve
 
+from app.db import DB
 from app.export_resource import ExportResource
 from app.landing import LandingResource
 from app.import_resource import ImportResource
 
 api = application = falcon.App()
+DB.init_db()
 
 # Add routes
 api.add_route('/', LandingResource())
