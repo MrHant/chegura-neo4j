@@ -4,8 +4,11 @@ from app.db import DB
 
 
 class FenResource(object):
+    def __init__(self):
+        self.db = DB()
+
     def on_get_base(self, req, resp):
-        all_fen = DB().get_all_fen_with_relations()
+        all_fen = self.db.get_all_fen_with_relations()
         resp.media = list(filter(lambda x: x is not None, all_fen))
 
         resp.set_header('Content-Type', 'application/json')
@@ -13,7 +16,7 @@ class FenResource(object):
 
     def on_get_data(self, req, resp):
         fen = req.get_param('fen')
-        result = list(DB().get_fen_with_relations(fen))
+        result = list(self.db.get_fen_with_relations(fen))
         if len(result) == 0:
             resp.media = []
         else:

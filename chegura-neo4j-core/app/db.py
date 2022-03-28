@@ -4,6 +4,12 @@ from neo4j import GraphDatabase
 class DB(object):
     def __init__(self):
         self.driver = GraphDatabase.driver("bolt://localhost:7687", auth=('neo4j', 'password'))
+        with self.driver.session() as session:
+            result = session.run("""
+            MATCH (b:Board) OPTIONAL MATCH (b)-[r]->() RETURN COUNT(DISTINCT b) as node_count, COUNT(r) as rel_count
+            """)
+            for row in result:
+                print(f"DB connection Warmup - {row.get('node_count')} nodes, {row.get('rel_count')} relations")
 
     def close(self):
         self.driver.close()
