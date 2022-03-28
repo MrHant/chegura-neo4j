@@ -21,5 +21,7 @@ class ExportResource(object):
             return moves
 
         resp.media = get_moves("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq")[0]
+
+        db.close()
         resp.set_header('Content-Type', 'application/json')
         resp.status = falcon.HTTP_200
