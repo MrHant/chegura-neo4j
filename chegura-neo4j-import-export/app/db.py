@@ -1,6 +1,22 @@
 from neo4j import GraphDatabase
 
 
+def _parse_move(record):
+    move = {
+        'm': record.get('move'),
+        'n': record.get('number'),
+        'c': record.get('color')
+    }
+    if record.get('type') != '':
+        move['t'] = record.get('type')
+    if record.get('evaluation_value') != '':
+        move['e'] = {
+            'v': record.get('evaluation_value'),
+            'd': record.get('evaluation_depth')
+        }
+    return move
+
+
 class DB(object):
     def __init__(self):
         self.driver = GraphDatabase.driver("bolt://localhost:7687", auth=('neo4j', 'password'))
@@ -31,21 +47,9 @@ class DB(object):
             result = session.run("""
              MATCH (n:Board)-[r]->(x) where n.fen=$fen RETURN r as move
              """,
-                        fen=fen)
+                                 fen=fen)
             for row in result:
-                move = {
-                    'm': row['move'].get('move'),
-                    'n': row['move'].get('number'),
-                    'c': row['move'].get('color')
-                }
-                if row['move'].get('type') != '':
-                    move['t'] = row['move'].get('type')
-                if row['move'].get('evaluation_value') != '':
-                    move['e'] = {
-                        'v': row['move'].get('evaluation_value'),
-                        'd': row['move'].get('evaluation_depth')
-                    }
-                yield move
+                yield _parse_move(row['move'])
 
     def get_all_moves(self):
         with self.driver.session() as session:
@@ -55,17 +59,5 @@ class DB(object):
             for row in result:
                 moves = []
                 for record in row['moves']:
-                    move = {
-                        'm': record.get('move'),
-                        'n': record.get('number'),
-                        'c': record.get('color')
-                    }
-                    if record.get('type') != '':
-                        move['t'] = record.get('type')
-                    if record.get('evaluation_value') != '':
-                        move['e'] = {
-                            'v': record.get('evaluation_value'),
-                            'd': record.get('evaluation_depth')
-                        }
-                    moves.append(move)
+                    moves.append(_parse_move(record))
                 yield row['fen'], moves
